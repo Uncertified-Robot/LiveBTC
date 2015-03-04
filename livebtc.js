@@ -16,7 +16,7 @@ var msgs = 0;
 var prevMsg;
 
 var ads = {};
-ads.enabled=false;
+ads.enabled=true;
 ads.frequency=100;
 ads.ad='<iframe scrolling="no" style="border: 0; width: 728px; height: 90px;" src="http://coinurl.com/get.php?id=34335"></iframe>';
 
