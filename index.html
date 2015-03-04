@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LiveBTC &middot; by Uncertified Robot</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"> 
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="livebtc.js"></script>
+</head>
+<body>
+    <p id="header">
+        <small id="desc">powered by <a href="http://blockchain.info" target="_BLANK">blockchain.info</a></small>
+        <small id="desc"><a href="http://redd.it/2xkru5" target="_BLANK">Reddit post</a></small>
+        <small id="desc"><a href="https://bitcointalk.org/index.php?topic=972936.msg10622867#msg10622867" target="_BLANK">Bitcointalk thread</a></small>
+        <span id="subs">
+            Subscribe to:
+            <a href="#" title="Subscribe to all unconfirmed transactions" id="subbut_unconf">Unconfirmed</a> &middot;
+            <a href="#" title="Subscribe to transactions outgoing from a specific address" id="subbut_address">Address</a> &middot;
+            <a href="#" title="Subscribe to all new blocks" id="subbut_blocks">Blocks</a> &middot; <span id="rate"></span> USD/BTC
+        </span>
+    </p>
+
+    <img src="../img/bitcoin.png" id="bitcoin"></img>
+    
+    <div id="ticker">
+        <span class="message">
+            <span class="time">[start]</span>
+            <span class="bar info"></span>
+            <span class="content">Welcome to LiveBTC.<br>
+                Click the buttons above to subscribe to stuff. Click again to unsubscribe.<br>
+                Your subscriptions should be saved and will be restored on your next visit.</span>
+        </span>
+    </div>
+    <div id="subscribed">
+        <table style="width:100%" id="subTable">
+              <tr>
+                <th id="addr">Address</th>
+                <th>Nickname</th> 
+                <!--<th>Balance</th>//-->
+              </tr>
+
+              
+
+        </table>
+    </div>
+</body>
+</html>
