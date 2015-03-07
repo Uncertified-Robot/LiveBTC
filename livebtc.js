@@ -18,7 +18,7 @@ var prevMsg;
 var ads = {};
 ads.enabled=true;
 ads.frequency=100;
-ads.ad='<iframe scrolling="no" style="border: 0; width: 728px; height: 90px;" src="http://coinurl.com/get.php?id=34335"></iframe>';
+ads.ad="<iframe data-aa='61195' src='//ad.a-ads.com/61195?size=728x90' scrolling='no' style='width:728px; height:90px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>";
 
 
 // Add size leading zeros to num
