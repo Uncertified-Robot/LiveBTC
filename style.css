@@ -24,7 +24,6 @@ a:hover {
 
 
 #header {
-    font-family: "Comic Sans MS", monospace;
     font-size: 14px;
 
     display: block;
@@ -140,7 +139,6 @@ a:hover {
 #subscribed {
 
     position:absolute;
-    font-family: "Comic Sans MS", monospace;
     font-size: 14px;
     top:50px;
     right:1px;
