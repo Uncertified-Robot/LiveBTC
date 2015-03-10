@@ -17,8 +17,8 @@ var prevMsg;
 
 var ads = {};
 ads.enabled=true;
-ads.frequency=100;
-ads.ad="<iframe data-aa='61195' src='//ad.a-ads.com/61195?size=728x90' scrolling='no' style='width:728px; height:90px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>";
+ads.frequency=75;
+ads.ad="<iframe data-aa='61195' src='http://ad.a-ads.com/61195?size=728x90' scrolling='no' style='width:728px; height:90px; border:0px; padding:0;overflow:hidden;' allowtransparency='true'></iframe>";
 
 
 // Add size leading zeros to num
@@ -32,7 +32,8 @@ function pad(num, size) {
 function roundTo(num, prec) {
     var n = Math.pow(10, prec);
     var sat = Math.round(num * n) / n;
-    return sat.toFixed(8)
+    sat = sat.toFixed(8);
+    return sat;
 }
 
 // HH:MM:SS timestamp for the messages
@@ -48,9 +49,9 @@ function statusMessage(e, p) {
     switch (p.msg) {
         case "welcome":
             return; //["Connected successfully", "success"];
-            case "subscribed":
+        case "subscribed":
             return; //["Subscription added", "info"];
-            default:
+        default:
             return ["Status: " + p.msg, "info"];
         }
     }
@@ -101,8 +102,8 @@ function addressMessage(e, p, adr) {
         var snd = new Audio(alertSounds[alertSound]);
         snd.play();
         var t = "<a href=\"http://blockchain.info/tx/" + p.x.hash
-        + "\">Transaction " + sh + "</a> outgoing from "
-        + "subscribed address <a target='_blank' href=\"http://blockchain.info/address/" + adr + "\">"
+        + "\" target=\"_BLANK\">Transaction " + sh + "</a> outgoing from "
+        + "subscribed address <a target=\"_BLANK\" href=\"http://blockchain.info/address/" + adr + "\">"
         + name + "</a> "
         + "sent &#3647;<b>" + roundTo(btc / 100000000, 8)
         + "</b> from <b>" + p.x.vin_sz
@@ -113,13 +114,15 @@ function addressMessage(e, p, adr) {
 
 // Generate message for new unconfirmed transactions
 function unconfMessage(e, p) {
+    
+    if (!sub_unconf)
+        return;
+
     msgs+=1;
     if(ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs && msgs != 0){
         addMessage(timeStamp(),"info", ads.ad);
     }
 
-    if (!sub_unconf)
-        return;
     var sh = p.x.hash.substr(0,5) + "&hellip;" + p.x.hash.substr(-5,5);
 
     var btc=0;
@@ -129,7 +132,7 @@ function unconfMessage(e, p) {
     if(p.x.vin_sz > 1){plural="s"}else{plural=""}
         if(p.x.vout_sz > 1){plural2="s"}else{plural2=""}  
             var t = "<a href=\"http://blockchain.info/tx/" + p.x.hash
-        + "\">Transaction " + sh + "</a> sent &#3647;<b>" + roundTo(btc / 100000000, 8)
+        + "\" target=\"_BLANK\">Transaction " + sh + "</a> sent &#3647;<b>" + roundTo(btc / 100000000, 8)
         + " from <b>" + p.x.vin_sz
         + "</b> input" + plural + " to <b>" + p.x.vout_sz + "</b> output"+plural2;
 
@@ -138,15 +141,16 @@ function unconfMessage(e, p) {
 
 // Generate message for new blocks
 function blocksMessage(e, p) {
+    
+    if (!sub_blocks)
+        return;
     msgs+=1;
     if(ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs && msgs != 0){
         addMessage(timeStamp(),"info", ads.ad);
     }
-    if (!sub_blocks)
-        return;
     if( p.x.nTx>1){plural="s"}else{plural=""}
         var t = "<a href=\"http://blockchain.info/block/" + p.x.hash
-    + "\">Block #" + p.x.height + "</a> was mined <b>"
+    + "\" target=\"_BLANK\">Block #" + p.x.height + "</a> was mined <b>"
     + "</b> with <b>" + p.x.nTx + "</b> transaction"+plural
     + " (<b>" + p.x.bits + "</b> bits) with a &#3647;<b>" + roundTo(p.x.reward / 100000000, 8) + "</b> reward";
     return [t, "block"];
@@ -188,13 +192,15 @@ function createSocket() {
         var tmp;
         switch (p.op) {
             case "status":
-            tmp = statusMessage(e, p); break;
+                tmp = statusMessage(e, p); break;
             case "utx":
-            tmp = dispatchTransaction(e, p); break;
+                tmp = dispatchTransaction(e, p); break;
             case "block":
-            tmp = blocksMessage(e, p); break;
+                tmp = blocksMessage(e, p); 
+                $("#but_lastblock").attr("title","View last block (#"+p.x.height+")");
+                break;
             default:
-            return;
+                return;
         }
 
         if (!tmp)
@@ -202,10 +208,12 @@ function createSocket() {
 
         var text = tmp[0];
         var cls = tmp[1];
-        if(tmp != prevMsg){
+        if(tmp[0] != prevMsg){
             addMessage(timeStamp(), cls, text);
-        }else{console.log("Blocked double msg");}
-        prevMsg=tmp;
+        }else{
+            console.log("Blocked double msg");
+        }
+        prevMsg=tmp[0];
     };
     connection.onclose = function(e) {
         setTimeout(createSocket, 300);
@@ -245,6 +253,9 @@ function updateSubs() {
         $("#subbut_address").text("Address");
         $("#subbut_address").css({"text-decoration": "none"});
     }
+
+
+
     printSubbedAddr();
 
 }
@@ -317,8 +328,16 @@ $(function(e) {
         updateSubs();
     });
 
+    $("#but_lastblock").click(function(){
+        connection.send("{\"op\":\"ping_block\"}");
+    });
+
+    $("#alrtSound").click(function(){
+        alertSound = parseInt($("#alrtSound").val()); 
+    });
     rateboxGetRate();
 });
+
 
 $(window).bind("unload", function() {
     connection.close();
