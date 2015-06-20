@@ -56,6 +56,7 @@ function statusMessage(e, p) {
         }
     }
 
+
 // Either return the result of addressMessage or unconfMessage depending on the inputs
 function dispatchTransaction(e, p) {
     if (sub_addresses.length == 0)
@@ -79,9 +80,10 @@ function dispatchTransaction(e, p) {
 // Generate message to and from an adress inside sub_addresses
 function addressMessage(e, p, adr) {
     msgs+=1;
-    if(ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs && msgs != 0){
+    if((ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs) || msgs == 1){
         addMessage(timeStamp(),"info", ads.ad);
     }
+
     
     var sh = p.x.hash.substr(0,5) + "&hellip;" + p.x.hash.substr(-5,5);
 
@@ -108,7 +110,6 @@ function addressMessage(e, p, adr) {
         + "sent &#3647;<b>" + roundTo(btc / 100000000, 8)
         + "</b> from <b>" + p.x.vin_sz
         + "</b> input" + plural + " to <b>" + p.x.vout_sz + "</b> output"+plural2;
-        
         return [t, "address"];
     }
 
@@ -119,7 +120,7 @@ function unconfMessage(e, p) {
         return;
 
     msgs+=1;
-    if(ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs && msgs != 0){
+    if((ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs) || msgs == 1){
         addMessage(timeStamp(),"info", ads.ad);
     }
 
@@ -145,9 +146,10 @@ function blocksMessage(e, p) {
     if (!sub_blocks)
         return;
     msgs+=1;
-    if(ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs && msgs != 0){
+    if((ads.enabled==true && Math.floor(msgs/ads.frequency)*ads.frequency == msgs) || msgs == 1){
         addMessage(timeStamp(),"info", ads.ad);
     }
+
     if( p.x.nTx>1){plural="s"}else{plural=""}
         var t = "<a href=\"http://blockchain.info/block/" + p.x.hash
     + "\" target=\"_BLANK\">Block #" + p.x.height + "</a> was mined <b>"
